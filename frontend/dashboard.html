@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard - EventSync{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Dashboard</h1>
+<a href="{{ url_for('main.new_event') }}" class="btn btn-primary mb-3">Create New Event</a>
+{% if events %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.name }}</td>
+            <td>{{ event.date.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ event.location }}</td>
+            <td>
+                <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary">Edit</a>
+                <a href="{{ url_for('main.delete_event', event_id=event.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No events to display. Start by creating a new event.</p>
+{% endif %}
+{% endblock %}

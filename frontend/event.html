@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}{{ event.name }} - EventSync{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h3 class="card-title">{{ event.name }}</h3>
+        <p class="card-text">{{ event.description }}</p>
+        <p class="card-text"><small class="text-muted">Event Date: {{ event.date.strftime('%Y-%m-%d %H:%M') }}</small></p>
+        <p class="card-text"><small class="text-muted">Location: {{ event.location }}</small></p>
+        <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary">Edit Event</a>
+    </div>
+</div>
+
+<h4>RSVPs</h4>
+{% if rsvps %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Guest Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rsvp in rsvps %}
+        <tr>
+            <td>{{ rsvp.user.username }}</td>
+            <td>{{ rsvp.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No RSVPs yet.</p>
+{% endif %}
+{% endblock %}

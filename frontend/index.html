@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Welcome to EventSync{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to EventSync!</h1>
+    <p class="lead">The ultimate tool for managing and organizing your events effortlessly.</p>
+    <hr class="my-4">
+    <p>Explore the features that will help you manage your events more effectively.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">Get Started</a>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Plan</h2>
+        <p>Use our intuitive planning tools to start creating your events now.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Organize</h2>
+        <p>Keep track of your event details, RSVPs, and participant feedback all in one place.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Execute</h2>
+        <p>Execute your events flawlessly with real-time updates and seamless communication tools.</p>
+    </div>
+</div>
+{% endblock %}

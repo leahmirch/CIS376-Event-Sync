@@ -1,0 +1,33 @@
+/* Event page specific styles */
+.event-details {
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.event-details h3 {
+    margin-top: 0;
+}
+
+.rsvp-list {
+    background-color: #fff;
+    padding: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+
+.rsvp-status {
+    font-weight: bold;
+}
+
+.status-accepted {
+    color: #28a745;  /* Green for accepted */
+}
+
+.status-declined {
+    color: #dc3545;  /* Red for declined */
+}
+
+.status-pending {
+    color: #ffc107;  /* Yellow for pending */
+}
