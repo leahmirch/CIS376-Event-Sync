@@ -1,5 +1,3 @@
-### README.md
-```markdown
 # EventSync Application
 
 EventSync is a web application designed to facilitate event management. It provides tools for organizing events, tracking RSVPs, and managing user interactions. This guide will help you set up and run the EventSync application on your local machine.
@@ -73,10 +71,6 @@ To run tests, use the following command:
 ```bash
 python -m unittest discover
 ```
-
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 ## Contact
 
