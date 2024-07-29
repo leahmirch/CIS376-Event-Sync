@@ -14,8 +14,8 @@ Follow these steps to get your development environment set up:
 
 1. **Clone the repository**
    ```bash
-   git clone https://yourrepositoryurl.com/eventsync.git
-   cd eventsync
+   git clone https://github.com/leahmirch/CIS376-Event-Sync
+   cd CIS376-Event-Sync
    ```
 
 2. **Set up a virtual environment** (optional, but recommended):
