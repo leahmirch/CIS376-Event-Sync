@@ -7,59 +7,77 @@ EventSync is a web application designed to facilitate event management. It provi
 Before you begin, ensure you have the following installed:
 - [Python](https://www.python.org/downloads/) (version 3.8 or higher)
 - [Git](https://git-scm.com/downloads)
+- [SQLite](https://www.sqlite.org/download.html)
 
 ## Installation
 
 Follow these steps to get your development environment set up:
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/leahmirch/CIS376-Event-Sync
-   cd CIS376-Event-Sync
-   ```
+### 1. Clone the Repository
+```bash
+git clone https://github.com/leahmirch/CIS376-Event-Sync.git
+cd CIS376-Event-Sync
+```
 
-2. **Set up a virtual environment** (optional, but recommended):
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On MacOS/Linux
-   source venv/bin/activate
-   ```
+### 2. Set Up SQLite
+1. **Download SQLite Tools**:
+   - Download the "Precompiled Binaries for Windows" from SQLite:
+     [Download SQLite Tools](https://www.sqlite.org/2023/sqlite-tools-win-x64-3460000.zip)
 
-3. **Install required packages**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+2. **Extract Files**:
+   - Extract the contents to `C:\sqlite`. Ensure `sqlite3.exe` is directly inside `C:\sqlite`.
 
-4. **Initialize the database**:
-   ```bash
-   flask db upgrade
-   flask shell
-   >>> from init_db import initialize_database
-   >>> initialize_database()
-   ```
+3. **Verify Installation**:
+   - Open Git Bash and run:
+     ```bash
+     /c/sqlite/sqlite3.exe --version
+     ```
+   - You should see the SQLite version output.
 
-5. **Seed the database** (Optional):
-   ```bash
-   sqlite3 app.db < seed.sql
-   ```
+### 3. Set Up a Virtual Environment
+```bash
+python -m venv venv
+# On Windows
+source venv/Scripts/activate
+# On macOS/Linux
+source venv/bin/activate
+```
 
-## Running the Application
+### 4. Install Required Packages
+```bash
+pip install -r requirements.txt
+```
 
-1. **Environment Variables**:
-   Set environment variables necessary for the application:
-   ```bash
-   export FLASK_APP=eventsync_app.py
-   export FLASK_ENV=development  # Set to 'production' in a production environment
-   export SECRET_KEY='your_secret_key_here'
-   ```
+### 5. Initialize the Database
+```bash
+python backend/scripts/init_db.py
+```
 
-2. **Start the Flask application**:
-   ```bash
-   flask run
-   ```
-   This command will start the server on http://127.0.0.1:5000/.
+### 6. Seed the Database
+```bash
+/c/sqlite/sqlite3.exe database/eventsync.db < database/seed.sql
+```
+
+### 7. Set Environment Variables
+Set environment variables necessary for the application:
+```bash
+export FLASK_APP=eventsync_app.py
+export FLASK_ENV=development  # Set to 'production' in a production environment
+export SECRET_KEY='your-secret-key-here'
+```
+
+### 8. Run the Flask Application
+Start the Flask application:
+```bash
+flask run
+```
+This command will start the server on `http://127.0.0.1:5000/`.
+
+### Troubleshooting
+If you encounter `ERR_CONNECTION_REFUSED`, ensure the following:
+- Flask is running and not reporting any errors.
+- The firewall is not blocking the connection.
+- You are accessing the correct URL: `http://127.0.0.1:5000/`.
 
 ## Usage
 
@@ -75,10 +93,6 @@ python -m unittest discover
 ## Contact
 
 Leah Mirch - [lmirch@umich.edu](mailto:lmirch@umich.edu)
+
 GitHub: [https://github.com/leahmirch](https://github.com/leahmirch)
-
-## Acknowledgments
-
-- Bootstrap for the CSS framework
-- Flask for the web framework
-- SQLite for the database
+```

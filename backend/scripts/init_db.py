@@ -3,10 +3,10 @@ import os
 
 def initialize_database():
     # Define the path to your schema SQL file
-    schema_path = 'schema.sql'
+    schema_path = os.path.join('database', 'schema.sql')
     
     # Connect to the SQLite database (this will create the database file if it does not exist)
-    db_path = os.path.join(os.getcwd(), 'eventsync.db')
+    db_path = os.path.join(os.getcwd(), 'database', 'eventsync.db')
     conn = sqlite3.connect(db_path)
     
     # Open the schema file and read its contents
@@ -14,9 +14,12 @@ def initialize_database():
         schema = f.read()
     
     # Execute the schema script
-    conn.executescript(schema)
-    print("Database initialized with the following schema:")
-    print(schema)
+    try:
+        conn.executescript(schema)
+        print("Database initialized with the following schema:")
+        print(schema)
+    except sqlite3.OperationalError as e:
+        print(f"An error occurred: {e}")
     
     # Commit the changes and close the connection
     conn.commit()
