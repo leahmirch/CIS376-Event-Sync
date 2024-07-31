@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_login import login_required, current_user
-from models import db, Event
+from backend.models import db, Event  # Updated import
 from datetime import datetime
 
 # Create a Blueprint for the event API
@@ -77,7 +77,7 @@ def setup_event_api(app):
 if __name__ == "__main__":
     from flask import Flask
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your-secret-key'
+    app.config['SECRET_KEY'] = 'key20'
     db.init_app(app)
     setup_event_api(app)
     app.run(debug=True)

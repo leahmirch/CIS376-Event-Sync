@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import db, User, Event, RSVP
+from backend.models import db, User, Event, RSVP
 from datetime import datetime
 
 # Create a Blueprint for the main part of the application
@@ -64,7 +64,7 @@ def setup_routes(app):
 if __name__ == "__main__":
     from flask import Flask
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your-secret-key'
+    app.config['SECRET_KEY'] = 'key20'
     db.init_app(app)
     setup_routes(app)
     app.run(debug=True)

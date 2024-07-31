@@ -1,21 +1,45 @@
-from flask import Flask
+from flask import Flask, render_template
 from config.config import Config
+from backend.models import db
+from backend.auth import auth, setup_login_manager
+from backend.views import main, setup_routes
+from backend.api.event_api import setup_event_api
+from backend.api.user_api import setup_user_api
+from flask_migrate import Migrate
 
 # Initialize the Flask application
-app = Flask(__name__)
+app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
 
 # Load configuration from config.py
 app.config.from_object(Config)
 
+# Initialize database
+db.init_app(app)
+
+# Set up Flask-Migrate
+migrate = Migrate(app, db)
+
+# Set up login manager
+setup_login_manager(app)
+
+# Register blueprints
+app.register_blueprint(auth)  # Register the auth blueprint
+setup_routes(app)
+setup_event_api(app)
+setup_user_api(app)
+
 # Sample route for the homepage
 @app.route('/')
 def home():
-    return "Welcome to EventSync! The platform for efficient event management."
+    return render_template('index.html')
 
-# Sample route for the dashboard (accessible after login)
-@app.route('/dashboard')
-def dashboard():
-    return "This is your dashboard. All event management tools will be accessible here."
+@app.cli.command('init-db')
+def init_db():
+    """Initialize the database."""
+    with app.app_context():
+        db.drop_all()  # Drop all existing tables
+        db.create_all()  # Create all tables based on models
+        print("Initialized the database.")
 
 # Condition to run the application directly
 if __name__ == '__main__':
