@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Invitees - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Invitees for <span class="text-primary">{{ event.name }}</span></h1>
+    <p class="lead">Organized by: <strong>{{ event.organizer.username }}</strong></p>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3>Current Invitees</h3>
+            <ul class="list-group">
+                {% for invitee in invitees %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ invitee.user.username }}
+                    {% if invitee.status == 'Accepted' %}
+                    <span class="badge badge-success badge-pill">{{ invitee.status }}</span>
+                    {% elif invitee.status == 'Pending' %}
+                    <span class="badge badge-primary badge-pill">{{ invitee.status }}</span>
+                    {% elif invitee.status == 'Declined' %}
+                    <span class="badge badge-danger badge-pill">{{ invitee.status }}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="col-md-6">
+            <h3>Invite More People</h3>
+            <form action="{{ url_for('main.invite_people', event_id=event.id) }}" method="POST">
+                <div class="form-group">
+                    {% for user in users %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="invitees" value="{{ user.id }}" id="user{{ user.id }}">
+                        <label class="form-check-label" for="user{{ user.id }}">
+                            {{ user.username }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary">Send Invitations</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

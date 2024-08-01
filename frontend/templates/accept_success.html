@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Invitation Accepted - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="alert alert-success">
+        <h4 class="alert-heading">Invitation Accepted</h4>
+        <p>You have successfully accepted the invitation for the event <strong>{{ event.name }}</strong>.</p>
+        <hr>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -60,16 +60,10 @@ python seed_db.py
 
 ### 7. Set Environment Variables
 Set environment variables necessary for the application:
-```bash
-export FLASK_APP=eventsync_app.py
-export FLASK_ENV=development 
-export SECRET_KEY='key20'
-```
-For Windows, use `set` instead of `export`:
 ```cmd
-set FLASK_APP=eventsync_app.py
-set FLASK_ENV=development 
-set SECRET_KEY=key20
+export FLASK_APP=eventsync_app
+export FLASK_ENV=development
+export SECRET_KEY=key20
 ```
 
 ### 8. Run the Flask Application

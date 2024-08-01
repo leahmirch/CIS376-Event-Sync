@@ -1,6 +1,3 @@
--- Schema.sql
--- SQL commands to create the necessary tables for the EventSync application
-
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS rsvps;
@@ -18,7 +15,8 @@ CREATE TABLE events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(140) NOT NULL,
     description TEXT,
-    date DATETIME,
+    start_datetime DATETIME NOT NULL,
+    end_datetime DATETIME NOT NULL,
     location VARCHAR(140),
     organizer_id INTEGER,
     FOREIGN KEY (organizer_id) REFERENCES users(id)

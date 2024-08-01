@@ -64,7 +64,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         flash('Registration successful. Please log in.', 'info')
-        return redirect(url_for('auth.login'))
+        return render_template('user_register_success.html')
 
     return render_template('register.html')
 
@@ -72,7 +72,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main.home'))
+    return render_template('user_logout_success.html')
 
 if __name__ == "__main__":
     app = Flask(__name__)

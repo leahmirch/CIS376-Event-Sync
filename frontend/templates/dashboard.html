@@ -10,7 +10,10 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Date</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Date</th>
+            <th>End Time</th>
             <th>Location</th>
             <th>Actions</th>
         </tr>
@@ -19,11 +22,15 @@
         {% for event in events %}
         <tr>
             <td>{{ event.name }}</td>
-            <td>{{ event.date.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ event.start_datetime.strftime('%Y-%m-%d') }}</td>
+            <td>{{ event.start_datetime.strftime('%I:%M %p') }}</td>
+            <td>{{ event.end_datetime.strftime('%Y-%m-%d') }}</td>
+            <td>{{ event.end_datetime.strftime('%I:%M %p') }}</td>
             <td>{{ event.location }}</td>
             <td>
-                <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('main.view_event', event_id=event.id) }}" class="btn btn-info">View</a>
                 <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary">Edit</a>
+                <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning">Invitees</a>
                 <a href="{{ url_for('main.delete_event', event_id=event.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
             </td>
         </tr>
@@ -32,5 +39,41 @@
 </table>
 {% else %}
 <p>No events to display. Start by creating a new event.</p>
+{% endif %}
+
+<h2 class="my-4">Invitations</h2>
+{% if rsvps %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Date</th>
+            <th>End Time</th>
+            <th>Organizer</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rsvp in rsvps %}
+        <tr>
+            <td>{{ rsvp.event.name }}</td>
+            <td>{{ rsvp.event.start_datetime.strftime('%Y-%m-%d') }}</td>
+            <td>{{ rsvp.event.start_datetime.strftime('%I:%M %p') }}</td>
+            <td>{{ rsvp.event.end_datetime.strftime('%Y-%m-%d') }}</td>
+            <td>{{ rsvp.event.end_datetime.strftime('%I:%M %p') }}</td>
+            <td>{{ rsvp.event.organizer.username }}</td>
+            <td>{{ rsvp.status }}</td>
+            <td>
+                <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info">View Event</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No invitations to display.</p>
 {% endif %}
 {% endblock %}

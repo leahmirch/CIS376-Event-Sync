@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Event Details - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Event Details for <span class="text-primary">{{ event.name }}</span></h1>
+    <p class="lead">Organized by: <strong>{{ event.organizer.username }}</strong></p>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Description:</strong> {{ event.description }}</li>
+        <li class="list-group-item"><strong>Start Date:</strong> {{ event.start_datetime.strftime('%Y-%m-%d') }}</li>
+        <li class="list-group-item"><strong>Start Time:</strong> {{ event.start_datetime.strftime('%I:%M %p') }}</li>
+        <li class="list-group-item"><strong>End Date:</strong> {{ event.end_datetime.strftime('%Y-%m-%d') }}</li>
+        <li class="list-group-item"><strong>End Time:</strong> {{ event.end_datetime.strftime('%I:%M %p') }}</li>
+        <li class="list-group-item"><strong>Location:</strong> {{ event.location }}</li>
+    </ul>
+
+    <form method="POST">
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="decline" class="btn btn-danger">Decline</button>
+    </form>
+</div>
+{% endblock %}

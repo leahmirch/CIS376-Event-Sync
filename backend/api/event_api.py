@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify, abort, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from backend.models import db, Event  # Updated import
+from backend.models import db, Event
 from datetime import datetime
 
 # Create a Blueprint for the event API
@@ -14,7 +14,7 @@ def get_events():
 
 @event_api.route('/api/events', methods=['POST'])
 @login_required
-def create_event():
+def create_event_api():
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
@@ -33,6 +33,31 @@ def create_event():
 
     except (KeyError, ValueError) as e:
         return jsonify({'error': 'Invalid data', 'message': str(e)}), 400
+
+@event_api.route('/events/create', methods=['GET', 'POST'])
+@login_required
+def create_event():
+    if request.method == 'POST':
+        event_name = request.form['event_name']
+        event_description = request.form['event_description']
+        event_date = request.form['event_date']
+        event_time = request.form['event_time']
+        event_location = request.form['event_location']
+
+        new_event = Event(
+            name=event_name,
+            description=event_description,
+            date=datetime.strptime(f"{event_date} {event_time}", '%Y-%m-%d %H:%M'),
+            location=event_location,
+            organizer_id=current_user.id
+        )
+
+        db.session.add(new_event)
+        db.session.commit()
+        flash('Event created successfully!', 'success')
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('create_event.html')
 
 @event_api.route('/api/events/<int:event_id>', methods=['GET'])
 @login_required
