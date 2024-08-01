@@ -56,8 +56,13 @@ def edit_event(event_id):
     
     return render_template('edit_event.html', event=event)
 
-# Additional routes and functionalities can be added as needed
+@main.route('/contact')
+def contact():
+    return render_template('contact.html')
 
+@main.route('/about')
+def about():
+    return render_template('about.html')
 def setup_routes(app):
     app.register_blueprint(main)
 

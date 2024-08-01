@@ -48,22 +48,28 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Initialize the Database
+### 5. Initialize the Database Schema
 ```bash
 python backend/scripts/init_db.py
 ```
 
-### 6. Seed the Database
+### 6. Seed the Database with Initial Data
 ```bash
-/c/sqlite3/sqlite3.exe database/eventsync.db < database/seed.sql
+python seed_db.py
 ```
 
 ### 7. Set Environment Variables
 Set environment variables necessary for the application:
 ```bash
 export FLASK_APP=eventsync_app.py
-export FLASK_ENV=development  # Set to 'production' in a production environment
+export FLASK_ENV=development 
 export SECRET_KEY='key20'
+```
+For Windows, use `set` instead of `export`:
+```cmd
+set FLASK_APP=eventsync_app.py
+set FLASK_ENV=development 
+set SECRET_KEY=key20
 ```
 
 ### 8. Run the Flask Application
@@ -95,4 +101,3 @@ python -m unittest discover
 Leah Mirch - [lmirch@umich.edu](mailto:lmirch@umich.edu)
 
 GitHub: [https://github.com/leahmirch](https://github.com/leahmirch)
-```

@@ -1,7 +1,7 @@
 -- Insert initial user data
 INSERT INTO users (username, email, password_hash) VALUES
-('admin', 'admin@example.com', 'hashed_admin_password'),
-('organizer', 'organizer@example.com', 'hashed_organizer_password');
+('admin', 'admin@example.com', 'password'),
+('organizer', 'organizer@example.com', 'password');
 
 -- Insert initial event data
 INSERT INTO events (name, description, date, location, organizer_id) VALUES

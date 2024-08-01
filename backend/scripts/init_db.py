@@ -3,7 +3,7 @@ import os
 
 def initialize_database():
     schema_path = os.path.join('database', 'schema.sql')
-    db_path = os.path.join(os.getcwd(), 'database', 'eventsync.db')
+    db_path = os.path.join(os.getcwd(), 'eventsync.db')  # Correct path
     conn = sqlite3.connect(db_path)
     
     with open(schema_path, 'r') as f:

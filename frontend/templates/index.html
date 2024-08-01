@@ -4,23 +4,37 @@
 {% block content %}
 <div class="jumbotron">
     <h1 class="display-4">Welcome to EventSync!</h1>
-    <p class="lead">The ultimate tool for managing and organizing your events effortlessly.</p>
+    <p class="lead">Your one-stop solution for all event management needs.</p>
     <hr class="my-4">
-    <p>Explore the features that will help you manage your events more effectively.</p>
+    <p>From intimate gatherings to large-scale conferences, streamline your planning process and enhance attendee experience with real-time updates and seamless coordination.</p>
     <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">Get Started</a>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Plan</h2>
-        <p>Use our intuitive planning tools to start creating your events now.</p>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Discover</h2>
+            <p>Dive into a wide range of tools designed to simplify event organization, enhance collaboration, and ensure every event is a success.</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Engage</h2>
+            <p>Connect with attendees effectively. Manage RSVPs, send updates, and receive feedback to continuously improve the event experience.</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Execute</h2>
+            <p>Utilize our robust tools for flawless execution. Track real-time changes and coordinate seamlessly with your team and vendors.</p>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Organize</h2>
-        <p>Keep track of your event details, RSVPs, and participant feedback all in one place.</p>
-    </div>
-    <div class="col-md-4">
-        <h2>Execute</h2>
-        <p>Execute your events flawlessly with real-time updates and seamless communication tools.</p>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Mobile Compatibility</h3>
+            <p>Access EventSync on the go with our mobile-friendly design, ensuring you can manage your events anytime, anywhere.</p>
+        </div>
+        <div class="col-md-6">
+            <h3>Community and Support</h3>
+            <p>Join an active community of organizers, gain insights, share experiences, and get support to make your events stand out.</p>
+        </div>
     </div>
 </div>
+
 {% endblock %}

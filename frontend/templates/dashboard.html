@@ -3,6 +3,7 @@
 
 {% block content %}
 <h1 class="my-4">Dashboard</h1>
+<p>Here you can manage your events.</p>
 <a href="{{ url_for('main.new_event') }}" class="btn btn-primary mb-3">Create New Event</a>
 {% if events %}
 <table class="table">
