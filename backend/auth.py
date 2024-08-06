@@ -64,7 +64,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         flash('Registration successful. Please log in.', 'info')
-        return render_template('user_register_success.html')
+        return redirect(url_for('user_api.user_register_success'))
 
     return render_template('register.html')
 
@@ -82,4 +82,28 @@ if __name__ == "__main__":
     db.init_app(app)
     app.register_blueprint(auth)
     setup_login_manager(app)
+    app.run(debug=True)
+
+
+from flask import Flask
+from backend.models import db
+from backend.auth import setup_login_manager
+from backend.views import setup_routes
+from backend.vendor_views import setup_vendor_routes
+from backend.payment_views import setup_payment_routes
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'key20'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventsync.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+setup_login_manager(app)
+setup_routes(app)
+setup_vendor_routes(app)
+setup_payment_routes(app)
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

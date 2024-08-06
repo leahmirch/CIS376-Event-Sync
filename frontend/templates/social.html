@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Share Event - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Share Event</h1>
+    <p>Select a platform to share your event:</p>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><a href="https://www.instagram.com" target="_blank">Share on Instagram</a></li>
+        <li class="list-group-item"><a href="https://www.facebook.com" target="_blank">Share on Facebook</a></li>
+        <li class="list-group-item"><a href="mailto:?subject=Check out this event&body=Here are the details of the event: {{ url_for('main.event', event_id=event.id, _external=True) }}" target="_blank">Share via Email</a></li>
+        <li class="list-group-item"><a href="#" onclick="copyLink()">Copy Link</a></li>
+    </ul>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
+</div>
+
+<script>
+function copyLink() {
+    const url = "{{ url_for('main.event', event_id=event.id, _external=True) }}";
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Link copied to clipboard');
+    });
+}
+</script>
+{% endblock %}

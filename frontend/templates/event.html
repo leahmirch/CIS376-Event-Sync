@@ -1,36 +1,64 @@
 {% extends "layout.html" %}
-{% block title %}{{ event.name }} - EventSync{% endblock %}
+{% block title %}Event Details - EventSync{% endblock %}
 
 {% block content %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h3 class="card-title">{{ event.name }}</h3>
-        <p class="card-text">{{ event.description }}</p>
-        <p class="card-text"><small class="text-muted">Event Date: {{ event.date.strftime('%Y-%m-%d %H:%M') }}</small></p>
-        <p class="card-text"><small class="text-muted">Location: {{ event.location }}</small></p>
-        <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary">Edit Event</a>
-    </div>
+<div class="container my-4">
+    <h1 class="mb-4">Event Details for <span class="text-primary">{{ event.name }}</span></h1>
+    <p class="lead">Organized by: <strong>{{ event.organizer.username }}</strong></p>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Description:</strong> {{ event.description }}</li>
+        <li class="list-group-item"><strong>Start Date:</strong> {{ event.start_datetime.strftime('%Y-%m-%d') }}</li>
+        <li class="list-group-item"><strong>Start Time:</strong> {{ event.start_datetime.strftime('%I:%M %p') }}</li>
+        <li class="list-group-item"><strong>End Date:</strong> {{ event.end_datetime.strftime('%Y-%m-%d') }}</li>
+        <li class="list-group-item"><strong>End Time:</strong> {{ event.end_datetime.strftime('%I:%M %p') }}</li>
+        <li class="list-group-item"><strong>Location:</strong> {{ event.location }}</li>
+        <li class="list-group-item"><strong>Total Collected:</strong> ${{ total_collected }}</li>
+    </ul>
+
+    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary">Share</a>
+    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success">Add to Calendar</a>
+
+    <form method="POST" id="accept-decline-form">
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="decline" class="btn btn-danger">Decline</button>
+    </form>
 </div>
 
-<h4>RSVPs</h4>
-{% if rsvps %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Guest Name</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for rsvp in rsvps %}
-        <tr>
-            <td>{{ rsvp.user.username }}</td>
-            <td>{{ rsvp.status }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No RSVPs yet.</p>
-{% endif %}
+<script>
+document.getElementById('accept-decline-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var action = event.submitter.value;
+    if (action === 'accept') {
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'accept' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.open(data.redirect, '_blank');
+                setTimeout(function() {
+                    window.location.href = "{{ url_for('user_api.accept_success', event_id=event.id) }}";
+                }, 2000);
+            } else {
+                window.location.href = "{{ url_for('user_api.accept_success', event_id=event.id) }}";
+            }
+        });
+    } else {
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'decline' })
+        })
+        .then(() => {
+            window.location.href = "{{ url_for('user_api.decline_success', event_id=event.id) }}";
+        });
+    }
+});
+</script>
 {% endblock %}

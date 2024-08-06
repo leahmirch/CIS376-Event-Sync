@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Add Vendor - EventSync{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add New Vendor</h2>
+    <form method="POST" action="{{ url_for('vendor.new_vendor') }}">
+        <div class="form-group">
+            <label for="name">Vendor Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="contact_info">Contact Info</label>
+            <input type="text" class="form-control" id="contact_info" name="contact_info" required>
+        </div>
+        <div class="form-group">
+            <label for="contract_details">Contract Details</label>
+            <textarea class="form-control" id="contract_details" name="contract_details" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Vendor</button>
+    </form>
+</div>
+{% endblock %}

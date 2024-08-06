@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Vendors - EventSync{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Vendors</h2>
+    <a href="{{ url_for('main.new_vendor') }}" class="btn btn-primary mb-3">Add Vendor</a>
+    {% if vendors %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Service</th>
+                <th>Contact Info</th>
+                <th>Contract Details</th>
+                <th>Payment Status</th>
+                <th>Reviews</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vendor in vendors %}
+            <tr>
+                <td>{{ vendor.name }}</td>
+                <td>{{ vendor.service }}</td>
+                <td>{{ vendor.contact_info }}</td>
+                <td>{{ vendor.contract_details }}</td>
+                <td>{{ vendor.payment_status }}</td>
+                <td>{{ vendor.reviews }}</td>
+                <td>
+                    <a href="{{ url_for('main.edit_vendor', vendor_id=vendor.id) }}" class="btn btn-secondary">Edit</a>
+                    <form action="{{ url_for('main.delete_vendor', vendor_id=vendor.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No vendors to display.</p>
+    {% endif %}
+</div>
+{% endblock %}

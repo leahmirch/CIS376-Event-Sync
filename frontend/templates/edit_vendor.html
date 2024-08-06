@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Edit Vendor - EventSync{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Vendor</h2>
+    <form method="POST" action="{{ url_for('vendor.edit_vendor', vendor_id=vendor.id) }}">
+        <div class="form-group">
+            <label for="name">Vendor Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ vendor.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="contact_info">Contact Info</label>
+            <input type="text" class="form-control" id="contact_info" name="contact_info" value="{{ vendor.contact_info }}" required>
+        </div>
+        <div class="form-group">
+            <label for="contract_details">Contract Details</label>
+            <textarea class="form-control" id="contract_details" name="contract_details" rows="3" required>{{ vendor.contract_details }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Vendor</button>
+    </form>
+</div>
+{% endblock %}

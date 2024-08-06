@@ -14,9 +14,17 @@
         <li class="list-group-item"><strong>Location:</strong> {{ event.location }}</li>
     </ul>
 
-    <form method="POST">
-        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+    <form method="POST" id="accept-decline-form">
+        <button type="submit" name="action" value="accept" class="btn btn-success" onclick="openPayPal('{{ event.payment_amount }}')">Accept</button>
         <button type="submit" name="action" value="decline" class="btn btn-danger">Decline</button>
     </form>
 </div>
+
+<script>
+function openPayPal(amount) {
+    if (amount > 0) {
+        window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mirchleah20@yahoo.com&amount=' + amount + '&currency_code=USD', '_blank');
+    }
+}
+</script>
 {% endblock %}

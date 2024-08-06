@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Event - EventSync{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Event</h2>
+    <form method="POST" action="{{ url_for('main.edit_event', event_id=event.id) }}" id="editEventForm">
+        <div class="form-group">
+            <label for="event_name">Event Name</label>
+            <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="event_description">Event Description</label>
+            <textarea class="form-control" id="event_description" name="event_description" rows="3" required>{{ event.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ event.start_datetime.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ event.end_datetime.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="form-group">
+            <label for="start_time">Start Time</label>
+            <input type="time" class="form-control" id="start_time" name="start_time" value="{{ event.start_datetime.strftime('%H:%M') }}" required>
+        </div>
+        <div class="form-group">
+            <label for="end_time">End Time</label>
+            <input type="time" class="form-control" id="end_time" name="end_time" value="{{ event.end_datetime.strftime('%H:%M') }}" required>
+        </div>
+        <div class="form-group">
+            <label for="event_location">Event Location</label>
+            <input type="text" class="form-control" id="event_location" name="event_location" value="{{ event.location }}" required>
+        </div>
+        <div class="form-group">
+            <label for="payment_required">Payment Required:</label>
+            <select class="form-control" id="payment_required" name="payment_required" onchange="togglePaymentAmount(this)">
+                <option value="no" {% if not event.payment_required %}selected{% endif %}>No</option>
+                <option value="yes" {% if event.payment_required %}selected{% endif %}>Yes</option>
+            </select>
+        </div>
+        <div class="form-group" id="payment_amount_group" {% if not event.payment_required %}style="display:none;"{% endif %}>
+            <label for="payment_amount">Payment Amount:</label>
+            <input type="number" step="0.01" class="form-control" id="payment_amount" name="payment_amount" value="{{ event.payment_amount or '' }}">
+        </div>
+    
+        <div class="form-group">
+            <label for="vendors">Vendors:</label>
+            <select multiple class="form-control" id="vendors" name="vendors">
+                {% for vendor in vendors %}
+                <option value="{{ vendor.id }}" {% if vendor in event.vendors %}selected{% endif %}>{{ vendor.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Event</button>
+    </form>
+    
+    <script>
+        function togglePaymentAmount(select) {
+            var paymentAmountGroup = document.getElementById('payment_amount_group');
+            if (select.value === 'yes') {
+                paymentAmountGroup.style.display = 'block';
+            } else {
+                paymentAmountGroup.style.display = 'none';
+            }
+        }
+        </script>
+
+</div>
+{% endblock %}

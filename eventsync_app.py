@@ -5,6 +5,8 @@ from backend.auth import auth, setup_login_manager
 from backend.views import main, setup_routes
 from backend.api.event_api import setup_event_api
 from backend.api.user_api import setup_user_api
+from backend.vendor_views import setup_vendor_routes
+from backend.payment_views import setup_payment_routes
 from flask_migrate import Migrate
 
 # Initialize the Flask application
@@ -27,6 +29,8 @@ app.register_blueprint(auth)  # Register the auth blueprint
 setup_routes(app)
 setup_event_api(app)
 setup_user_api(app)
+setup_vendor_routes(app)  # Register vendor blueprint
+setup_payment_routes(app)  # Register payment blueprint
 
 # Sample route for the homepage
 @app.route('/')

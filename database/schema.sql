@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS events;
-DROP TABLE IF EXISTS rsvps;
-
 -- Create the 'users' table
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,25 +10,55 @@ CREATE TABLE users (
 CREATE TABLE events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(140) NOT NULL,
-    description TEXT,
+    description TEXT NOT NULL,
     start_datetime DATETIME NOT NULL,
     end_datetime DATETIME NOT NULL,
-    location VARCHAR(140),
-    organizer_id INTEGER,
-    FOREIGN KEY (organizer_id) REFERENCES users(id)
+    location VARCHAR(140) NOT NULL,
+    organizer_id INTEGER NOT NULL,
+    vendor_id INTEGER,
+    FOREIGN KEY (organizer_id) REFERENCES users(id),
+    FOREIGN KEY (vendor_id) REFERENCES vendors(id)
 );
 
 -- Create the 'rsvps' table
 CREATE TABLE rsvps (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    event_id INTEGER,
+    user_id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
     status VARCHAR(64),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (event_id) REFERENCES events(id)
 );
 
--- Indexes to improve query performance
-CREATE INDEX idx_username ON users(username);
-CREATE INDEX idx_email ON users(email);
-CREATE INDEX idx_event_organizer ON events(organizer_id);
+-- Create the 'vendors' table
+CREATE TABLE vendors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(140) NOT NULL,
+    service VARCHAR(140) NOT NULL,
+    contact_info VARCHAR(140) NOT NULL,
+    contract_details TEXT NOT NULL,
+    payment_status VARCHAR(64) NOT NULL,
+    reviews TEXT,
+    organizer_id INTEGER,
+    FOREIGN KEY (organizer_id) REFERENCES users(id)
+);
+
+-- Create the 'payments' table
+CREATE TABLE payments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount FLOAT NOT NULL,
+    status VARCHAR(64) NOT NULL,
+    user_id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
+
+-- Create the 'event_vendor' association table
+CREATE TABLE event_vendor (
+    event_id INTEGER NOT NULL,
+    vendor_id INTEGER NOT NULL,
+    PRIMARY KEY (event_id, vendor_id),
+    FOREIGN KEY (event_id) REFERENCES events(id),
+    FOREIGN KEY (vendor_id) REFERENCES vendors(id)
+);
