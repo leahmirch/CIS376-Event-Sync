@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from backend.models import db, User, Event, Vendor, RSVP
+from backend.models import db, User, Event, Vendor, RSVP, Community, CommunityMessage
 from datetime import datetime
 
 def add_user_to_db(username, email, password):
@@ -29,6 +29,21 @@ def add_vendor_to_db(name, contact_info, contract_details):
 def add_rsvp_to_db(user_id, event_id, status):
     rsvp = RSVP(user_id=user_id, event_id=event_id, status=status)
     db.session.add(rsvp)
+    db.session.commit()
+
+def add_community_to_db(name, creator_id):
+    community = Community(name=name, creator_id=creator_id)
+    db.session.add(community)
+    db.session.commit()
+    return community.id
+
+def add_message_to_community(community_id, user_id, message):
+    community_message = CommunityMessage(
+        community_id=community_id,
+        user_id=user_id,
+        message=message
+    )
+    db.session.add(community_message)
     db.session.commit()
 
 if __name__ == "__main__":
@@ -121,7 +136,33 @@ if __name__ == "__main__":
         add_rsvp_to_db(jane_id, book_fair_id, 'Accepted')
         add_rsvp_to_db(emily_id, book_fair_id, 'Pending')
 
-        add_feedback_to_db(1, 1, 'Great event, learned a lot!', 5)
-        add_feedback_to_db(2, 2, 'Loved the music!', 4)
+        # Adding initial communities
+        community1_id = add_community_to_db('Tech Enthusiasts', admin_id)
+        community2_id = add_community_to_db('Music Lovers', john_id)
+        community3_id = add_community_to_db('Startup Founders', jane_id)
+
+        # Adding users to communities
+        community1 = Community.query.get(community1_id)
+        community2 = Community.query.get(community2_id)
+        community3 = Community.query.get(community3_id)
+
+        community1.members.append(User.query.get(john_id))
+        community1.members.append(User.query.get(jane_id))
+
+        community2.members.append(User.query.get(emily_id))
+        community2.members.append(User.query.get(michael_id))
+
+        community3.members.append(User.query.get(admin_id))
+        community3.members.append(User.query.get(emily_id))
+
+        db.session.commit()
+
+        # Adding messages to communities
+        add_message_to_community(community1_id, admin_id, 'Welcome to Tech Enthusiasts!')
+        add_message_to_community(community1_id, john_id, 'Excited to be here!')
+        add_message_to_community(community2_id, john_id, 'Welcome to Music Lovers!')
+        add_message_to_community(community2_id, emily_id, 'Glad to join!')
+        add_message_to_community(community3_id, jane_id, 'Welcome to Startup Founders!')
+        add_message_to_community(community3_id, admin_id, 'Looking forward to collaborating!')
 
         print("Database seeded successfully.")

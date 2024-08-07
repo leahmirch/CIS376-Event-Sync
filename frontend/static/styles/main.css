@@ -31,6 +31,11 @@ body {
     border-color: #bee5eb;
 }
 
+.badge-creator {
+    background-color: #007bff;
+    color: white;
+}
+
 /* Navbar customization */
 .navbar {
     background-color: #DDEBF7; /* Assuming the logo's primary color */

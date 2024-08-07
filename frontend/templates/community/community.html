@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}{{ community.name }} - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">{{ community.name }}</h1>
+
+    <h3 class="mt-4">Members</h3>
+    <ul class="list-group">
+        {% for member in members %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ member.username }}
+            <span class="badge {% if member.id == community.creator_id %}badge-creator{% else %}badge-secondary{% endif %}">
+                {% if member.id == community.creator_id %}
+                    Creator
+                {% else %}
+                    Member
+                {% endif %}
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h3 class="mt-4">Messages</h3>
+    <form method="POST" action="{{ url_for('community.post_message', community_id=community.id) }}">
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Message</button>
+    </form>
+    <ul class="list-group mt-4">
+        {% for message in messages %}
+        <li class="list-group-item">
+            <strong>{{ message.user.username }}:</strong> {{ message.message }} <br>
+            <small class="text-muted">{{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

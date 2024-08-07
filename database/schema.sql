@@ -74,3 +74,31 @@ CREATE TABLE event_vendor (
     FOREIGN KEY (event_id) REFERENCES events(id),
     FOREIGN KEY (vendor_id) REFERENCES vendors(id)
 );
+
+-- Create the 'communities' table
+CREATE TABLE communities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(140) NOT NULL,
+    creator_id INTEGER NOT NULL,
+    FOREIGN KEY (creator_id) REFERENCES users(id)
+);
+
+-- Create the 'community_messages' table
+CREATE TABLE community_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    community_id INTEGER NOT NULL,
+    message TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (community_id) REFERENCES communities(id)
+);
+
+-- Create the 'user_community' association table
+CREATE TABLE user_community (
+    user_id INTEGER NOT NULL,
+    community_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, community_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (community_id) REFERENCES communities(id)
+);

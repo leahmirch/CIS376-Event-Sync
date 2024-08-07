@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback
+from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback, Community  # Ensure Community is imported
 from datetime import datetime
 from flask import abort
 
@@ -16,7 +16,11 @@ def home():
 def dashboard():
     events = Event.query.filter_by(organizer_id=current_user.id).all()
     rsvps = RSVP.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', events=events, rsvps=rsvps)
+    user_communities = current_user.communities
+    all_communities = Community.query.all()
+    # Communities that the user has not joined or created
+    joinable_communities = [c for c in all_communities if c not in user_communities and c.creator_id != current_user.id]
+    return render_template('dashboard.html', events=events, rsvps=rsvps, user_communities=user_communities, joinable_communities=joinable_communities)
 
 @main.route('/event/new', methods=['GET', 'POST'])
 @login_required

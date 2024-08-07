@@ -18,10 +18,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                {% if not current_user.is_authenticated %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
                 </li>
-                {% if not current_user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
                 </li>
@@ -42,6 +42,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('vendor.vendor_list') }}">Vendors</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('community.index') }}">Communities</a>
+                </li>
                 {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
@@ -51,7 +54,7 @@
                 </li>
             </ul>
         </div>
-    </nav>
+    </nav>    
 
     <div class="container">
         {% block content %}

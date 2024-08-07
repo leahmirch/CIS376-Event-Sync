@@ -4,9 +4,16 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+# Association table for many-to-many relationship between events and vendors
 event_vendor = db.Table('event_vendor',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
     db.Column('vendor_id', db.Integer, db.ForeignKey('vendors.id'), primary_key=True)
+)
+
+# Association table for many-to-many relationship between users and communities
+user_community = db.Table('user_community',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('community_id', db.Integer, db.ForeignKey('communities.id'), primary_key=True)
 )
 
 class User(UserMixin, db.Model):
@@ -19,6 +26,8 @@ class User(UserMixin, db.Model):
     rsvps = db.relationship('RSVP', backref='user', lazy=True)
     payments = db.relationship('Payment', backref='user', lazy=True)
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
+    created_communities = db.relationship('Community', backref='creator', lazy=True)
+    communities = db.relationship('Community', secondary=user_community, backref=db.backref('members', lazy='dynamic'))
 
     def is_active(self):
         return True
@@ -73,3 +82,19 @@ class Feedback(db.Model):
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Community(db.Model):
+    __tablename__ = 'communities'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140), nullable=False)
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    messages = db.relationship('CommunityMessage', backref='community', lazy=True, cascade="all, delete-orphan")
+
+class CommunityMessage(db.Model):
+    __tablename__ = 'community_messages'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    community_id = db.Column(db.Integer, db.ForeignKey('communities.id'), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship('User', backref='community_messages')

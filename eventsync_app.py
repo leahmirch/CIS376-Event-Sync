@@ -1,3 +1,4 @@
+# eventsync_app.py
 from flask import Flask, render_template
 from config.config import Config
 from backend.models import db
@@ -7,6 +8,7 @@ from backend.api.event_api import setup_event_api
 from backend.api.user_api import setup_user_api
 from backend.vendor_views import setup_vendor_routes
 from backend.payment_views import setup_payment_routes
+from backend.community_views import setup_community_routes
 from flask_migrate import Migrate
 
 # Initialize the Flask application
@@ -31,6 +33,7 @@ setup_event_api(app)
 setup_user_api(app)
 setup_vendor_routes(app)  # Register vendor blueprint
 setup_payment_routes(app)  # Register payment blueprint
+setup_community_routes(app)
 
 # Sample route for the homepage
 @app.route('/')
