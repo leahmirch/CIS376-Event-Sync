@@ -5,30 +5,53 @@
 <div class="container mt-5">
     <h2>Vendors</h2>
     <a href="{{ url_for('vendor.new_vendor') }}" class="btn btn-primary mb-3">Add New Vendor</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Contact Info</th>
-                <th>Contract Details</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for vendor in vendors %}
-            <tr>
-                <td>{{ vendor.name }}</td>
-                <td>{{ vendor.contact_info }}</td>
-                <td>{{ vendor.contract_details }}</td>
-                <td>
-                    <a href="{{ url_for('vendor.edit_vendor', vendor_id=vendor.id) }}" class="btn btn-secondary">Edit</a>
-                    <form action="{{ url_for('vendor.delete_vendor', vendor_id=vendor.id) }}" method="POST" style="display:inline-block;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
+    
+    <!-- Desktop view -->
+    <div class="d-none d-lg-block table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact Info</th>
+                    <th>Contract Details</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vendor in vendors %}
+                <tr>
+                    <td>{{ vendor.name }}</td>
+                    <td>{{ vendor.contact_info }}</td>
+                    <td>{{ vendor.contract_details }}</td>
+                    <td>
+                        <a href="{{ url_for('vendor.edit_vendor', vendor_id=vendor.id) }}" class="btn btn-secondary">Edit</a>
+                        <form action="{{ url_for('vendor.delete_vendor', vendor_id=vendor.id) }}" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile view -->
+    <div class="d-lg-none">
+        {% for vendor in vendors %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ vendor.name }}</h5>
+                <p class="card-text"><strong>Contact Info:</strong> {{ vendor.contact_info }}</p>
+                <p class="card-text"><strong>Contract Details:</strong> {{ vendor.contract_details }}</p>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('vendor.edit_vendor', vendor_id=vendor.id) }}" class="btn btn-secondary mb-1">Edit</a>
+                    <form action="{{ url_for('vendor.delete_vendor', vendor_id=vendor.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
                     </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

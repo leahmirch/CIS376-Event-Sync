@@ -2,84 +2,148 @@
 {% block title %}Dashboard - EventSync{% endblock %}
 
 {% block content %}
-<h1 class="my-4">Dashboard</h1>
-<p>Here you can manage your events.</p>
-<a href="{{ url_for('main.new_event') }}" class="btn btn-primary mb-3">Create New Event</a>
-{% if events %}
-<div class="table-responsive">
-    <table class="table table-bordered table-dashboard">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Start Date</th>
-                <th>Start Time</th>
-                <th>End Date</th>
-                <th>End Time</th>
-                <th>Location</th>
-                <th>Payment Required</th>
-                <th>Payment Amount</th>
-                <th>Total Collected</th>
-                <th>Vendors</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for event in events %}
-            <tr>
-                <td>{{ event.name }}</td>
-                <td>{{ event.start_datetime.strftime('%Y-%m-%d') }}</td>
-                <td>{{ event.start_datetime.strftime('%I:%M %p') }}</td>
-                <td>{{ event.end_datetime.strftime('%Y-%m-%d') }}</td>
-                <td>{{ event.end_datetime.strftime('%I:%M %p') }}</td>
-                <td>{{ event.location }}</td>
-                <td>{{ 'Yes' if event.payment_required else 'No' }}</td>
-                <td>{{ event.payment_amount if event.payment_required else 'N/A' }}</td>
-                <td>${{ '{:.2f}'.format(event.total_collected()) }}</td>
-                <td>
+<div class="container my-4">
+    <h1 class="my-4">Dashboard</h1>
+    <p>Here you can manage your events.</p>
+    <a href="{{ url_for('main.new_event') }}" class="btn btn-primary mb-3">Create New Event</a>
+
+    {% if events %}
+    <div class="d-none d-lg-block table-responsive">
+        <table class="table table-bordered table-dashboard">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>Start Time</th>
+                    <th>End Date</th>
+                    <th>End Time</th>
+                    <th>Location</th>
+                    <th>Payment Required</th>
+                    <th>Payment Amount</th>
+                    <th>Total Collected</th>
+                    <th>Vendors</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.start_datetime.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ event.start_datetime.strftime('%I:%M %p') }}</td>
+                    <td>{{ event.end_datetime.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ event.end_datetime.strftime('%I:%M %p') }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ 'Yes' if event.payment_required else 'No' }}</td>
+                    <td>{{ event.payment_amount if event.payment_required else 'N/A' }}</td>
+                    <td>${{ '{:.2f}'.format(event.total_collected()) }}</td>
+                    <td>
+                        {% for vendor in event.vendors %}
+                            {{ vendor.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info mb-1 btn-dashboard">View</a>
+                        <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary mb-1 btn-dashboard">Edit</a>
+                        <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning mb-1 btn-dashboard">Invitees</a>
+                        <a href="{{ url_for('main.view_feedbacks', event_id=event.id) }}" class="btn btn-dark mb-1 btn-dashboard">View Feedback</a>
+                        <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary mb-1 btn-dashboard">Share</a>
+                        <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success mb-1 btn-dashboard">Add to Calendar</a>
+                        <form action="{{ url_for('main.delete_event', event_id=event.id) }}" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-lg-none">
+        {% for event in events %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.name }}</h5>
+                <p class="card-text"><strong>Start Date:</strong> {{ event.start_datetime.strftime('%Y-%m-%d') }}</p>
+                <p class="card-text"><strong>Start Time:</strong> {{ event.start_datetime.strftime('%I:%M %p') }}</p>
+                <p class="card-text"><strong>End Date:</strong> {{ event.end_datetime.strftime('%Y-%m-%d') }}</p>
+                <p class="card-text"><strong>End Time:</strong> {{ event.end_datetime.strftime('%I:%M %p') }}</p>
+                <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+                <p class="card-text"><strong>Payment Required:</strong> {{ 'Yes' if event.payment_required else 'No' }}</p>
+                <p class="card-text"><strong>Payment Amount:</strong> {{ event.payment_amount if event.payment_required else 'N/A' }}</p>
+                <p class="card-text"><strong>Total Collected:</strong> ${{ '{:.2f}'.format(event.total_collected()) }}</p>
+                <p class="card-text"><strong>Vendors:</strong> 
                     {% for vendor in event.vendors %}
                         {{ vendor.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
-                </td>
-                <td>
-                    <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info mb-1 btn-dashboard">View</a>
-                    <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary mb-1 btn-dashboard">Edit</a>
-                    <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning mb-1 btn-dashboard">Invitees</a>
-                    <a href="{{ url_for('main.view_feedbacks', event_id=event.id) }}" class="btn btn-dark mb-1 btn-dashboard">View Feedback</a>
-                    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary mb-1 btn-dashboard">Share</a>
-                    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success mb-1 btn-dashboard">Add to Calendar</a>
-                    <form action="{{ url_for('main.delete_event', event_id=event.id) }}" method="POST" style="display:inline-block;">
+                </p>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info mb-1">View</a>
+                    <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary mb-1">Edit</a>
+                    <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning mb-1">Invitees</a>
+                    <a href="{{ url_for('main.view_feedbacks', event_id=event.id) }}" class="btn btn-dark mb-1">View Feedback</a>
+                    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary mb-1">Share</a>
+                    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success mb-1">Add to Calendar</a>
+                    <form action="{{ url_for('main.delete_event', event_id=event.id) }}" method="POST" style="display:inline;">
                         <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<p>No events to display. Start by creating a new event.</p>
-{% endif %}
+                    </form>                                     
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No events to display. Start by creating a new event.</p>
+    {% endif %}
 
-<h2 class="my-4">Invitations</h2>
-{% if rsvps %}
-<div class="table-responsive">
-    <table class="table table-bordered table-dashboard">
-        <thead>
-            <tr>
-                <th>Event Name</th>
-                <th>Event Start Date</th>
-                <th>Event End Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rsvp in rsvps %}
-            <tr>
-                <td>{{ rsvp.event.name }}</td>
-                <td>{{ rsvp.event.start_datetime.strftime('%Y-%m-%d %I:%M %p') }}</td>
-                <td>{{ rsvp.event.end_datetime.strftime('%Y-%m-%d %I:%M %p') }}</td>
-                <td>
+    <h2 class="my-4">Invitations</h2>
+    {% if rsvps %}
+    <div class="d-none d-lg-block table-responsive">
+        <table class="table table-bordered table-dashboard">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Event Start Date</th>
+                    <th>Event End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rsvp in rsvps %}
+                <tr>
+                    <td>{{ rsvp.event.name }}</td>
+                    <td>{{ rsvp.event.start_datetime.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                    <td>{{ rsvp.event.end_datetime.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                    <td>
+                        {% if rsvp.status == 'Accepted' %}
+                            <span class="badge badge-success">{{ rsvp.status }}</span>
+                        {% elif rsvp.status == 'Pending' %}
+                            <span class="badge badge-primary">{{ rsvp.status }}</span>
+                        {% elif rsvp.status == 'Declined' %}
+                            <span class="badge badge-danger">{{ rsvp.status }}</span>
+                        {% else %}
+                            {{ rsvp.status }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info mb-1">View Event</a>
+                        <a href="{{ url_for('main.calendar', event_id=rsvp.event.id) }}" class="btn btn-success mb-1">Add to Calendar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-lg-none">
+        {% for rsvp in rsvps %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ rsvp.event.name }}</h5>
+                <p class="card-text"><strong>Start Date:</strong> {{ rsvp.event.start_datetime.strftime('%Y-%m-%d %I:%M %p') }}</p>
+                <p class="card-text"><strong>End Date:</strong> {{ rsvp.event.end_datetime.strftime('%Y-%m-%d %I:%M %p') }}</p>
+                <p class="card-text"><strong>Status:</strong> 
                     {% if rsvp.status == 'Accepted' %}
                         <span class="badge badge-success">{{ rsvp.status }}</span>
                     {% elif rsvp.status == 'Pending' %}
@@ -89,57 +153,74 @@
                     {% else %}
                         {{ rsvp.status }}
                     {% endif %}
-                </td>
-                <td>
-                    <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info mb-1 btn-dashboard">View Event</a>
-                    <a href="{{ url_for('main.calendar', event_id=rsvp.event.id) }}" class="btn btn-success mb-1 btn-dashboard">Add to Calendar</a>
-                    {% if not payment or payment.status != 'Completed' %}
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<p>No invitations to display.</p>
-{% endif %}
+                </p>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info mb-1">View Event</a>
+                    <a href="{{ url_for('main.calendar', event_id=rsvp.event.id) }}" class="btn btn-success mb-1">Add to Calendar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No incoming invitations to display.</p>
+    {% endif %}
 
-<h2 class="my-4">Communities</h2>
+    <h2 class="my-4">Communities</h2>
 
-<h5 class="my-4">Your Communities</h5>
-{% if user_communities %}
-<div class="table-responsive">
-    <table class="table table-bordered table-dashboard">
-        <thead>
-            <tr>
-                <th>Community Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for community in user_communities %}
-            <tr>
-                <td>{{ community.name }}</td>
-                <td>
-                    <a href="{{ url_for('community.view_community', community_id=community.id) }}" class="btn btn-info mb-1 btn-dashboard">View</a>
+    <h5 class="my-4">Your Communities</h5>
+    {% if user_communities %}
+    <div class="d-none d-lg-block table-responsive">
+        <table class="table table-bordered table-dashboard">
+            <thead>
+                <tr>
+                    <th>Community Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for community in user_communities %}
+                <tr>
+                    <td>{{ community.name }}</td>
+                    <td>
+                        <a href="{{ url_for('community.view_community', community_id=community.id) }}" class="btn btn-info mb-1 btn-dashboard">View</a>
+                        {% if community.creator_id == current_user.id %}
+                        <form action="{{ url_for('community.delete', community_id=community.id) }}" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary mb-1 btn-dashboard" disabled>Delete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-lg-none">
+        {% for community in user_communities %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ community.name }}</h5>
+                <div class="d-flex flex-column">
+                    <a href="{{ url_for('community.view_community', community_id=community.id) }}" class="btn btn-info mb-1">View</a>
                     {% if community.creator_id == current_user.id %}
-                    <form action="{{ url_for('community.delete', community_id=community.id) }}" method="POST" style="display:inline-block;">
+                    <form action="{{ url_for('community.delete', community_id=community.id) }}" method="POST" style="display:inline;">
                         <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
                     </form>
                     {% else %}
-                    <button class="btn btn-secondary mb-1 btn-dashboard" disabled>Delete</button>
+                    <button class="btn btn-secondary mb-1" disabled>Delete</button>
                     {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<p>No communities to display.</p>
-{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No communities to display.</p>
+    {% endif %}
 
-<a href="{{ url_for('community.index') }}" class="btn btn-primary mb-3">View All Communities</a>
+    <a href="{{ url_for('community.index') }}" class="btn btn-primary mb-3">View All Communities</a>
 
 {% endblock %}
