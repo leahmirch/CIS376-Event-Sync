@@ -2,7 +2,7 @@
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: left;
 }
 
 .dashboard-actions {
@@ -37,6 +37,10 @@
     .dashboard-actions {
         order: 1;
         width: 100%;
-        text-align: center;
+        text-align: left;
+    }
+
+    .btn-group-vertical .btn {
+        margin-bottom: 0.5rem;
     }
 }

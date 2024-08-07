@@ -7,7 +7,7 @@
 <a href="{{ url_for('main.new_event') }}" class="btn btn-primary mb-3">Create New Event</a>
 {% if events %}
 <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-dashboard">
         <thead>
             <tr>
                 <th>Name</th>
@@ -34,20 +34,21 @@
                 <td>{{ event.location }}</td>
                 <td>{{ 'Yes' if event.payment_required else 'No' }}</td>
                 <td>{{ event.payment_amount if event.payment_required else 'N/A' }}</td>
-                <td>${{ event.total_collected() }}</td>
+                <td>${{ '{:.2f}'.format(event.total_collected()) }}</td>
                 <td>
                     {% for vendor in event.vendors %}
                         {{ vendor.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </td>
                 <td>
-                    <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info mb-1">View</a>
-                    <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary mb-1">Edit</a>
-                    <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning mb-1">Invitees</a>
-                    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary mb-1">Share</a>
-                    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success mb-1">Add to Calendar</a>
+                    <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-info mb-1 btn-dashboard">View</a>
+                    <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-secondary mb-1 btn-dashboard">Edit</a>
+                    <a href="{{ url_for('main.view_invitees', event_id=event.id) }}" class="btn btn-warning mb-1 btn-dashboard">Invitees</a>
+                    <a href="{{ url_for('main.view_feedbacks', event_id=event.id) }}" class="btn btn-dark mb-1 btn-dashboard">View Feedback</a>
+                    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary mb-1 btn-dashboard">Share</a>
+                    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success mb-1 btn-dashboard">Add to Calendar</a>
                     <form action="{{ url_for('main.delete_event', event_id=event.id) }}" method="POST" style="display:inline-block;">
-                        <button type="submit" class="btn btn-danger mb-1" onclick="return confirm('Are you sure?');">Delete</button>
+                        <button type="submit" class="btn btn-danger mb-1 btn-dashboard" onclick="return confirm('Are you sure?');">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -62,7 +63,7 @@
 <h2 class="my-4">Invitations</h2>
 {% if rsvps %}
 <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-dashboard">
         <thead>
             <tr>
                 <th>Event Name</th>
@@ -90,8 +91,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info mb-1">View Event</a>
-                    <a href="{{ url_for('main.calendar', event_id=rsvp.event.id) }}" class="btn btn-success mb-1">Add to Calendar</a>
+                    <a href="{{ url_for('main.view_event', event_id=rsvp.event.id) }}" class="btn btn-info mb-1 btn-dashboard">View Event</a>
+                    <a href="{{ url_for('main.calendar', event_id=rsvp.event.id) }}" class="btn btn-success mb-1 btn-dashboard">Add to Calendar</a>
                     {% if not payment or payment.status != 'Completed' %}
                     {% endif %}
                 </td>

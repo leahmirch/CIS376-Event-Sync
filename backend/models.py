@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     events = db.relationship('Event', backref='organizer', lazy=True)
     rsvps = db.relationship('RSVP', backref='user', lazy=True)
     payments = db.relationship('Payment', backref='user', lazy=True)
+    feedbacks = db.relationship('Feedback', backref='user', lazy=True)
 
     def is_active(self):
         return True
@@ -34,13 +35,13 @@ class Event(db.Model):
     vendors = db.relationship('Vendor', secondary=event_vendor, backref=db.backref('events', lazy='dynamic'))
     rsvps = db.relationship('RSVP', backref='event', lazy=True)
     payments = db.relationship('Payment', backref='event', lazy=True)
+    feedbacks = db.relationship('Feedback', backref='event', lazy=True)
     payment_required = db.Column(db.Boolean, default=False)
     payment_amount = db.Column(db.Float, nullable=True)
 
     def total_collected(self):
-        accepted_rsvps = RSVP.query.filter_by(event_id=self.id, status='Accepted').count()
-        total = float(accepted_rsvps) * float(self.payment_amount) if self.payment_required else 0.0
-        return f"{total:.2f}"
+        collected = sum(payment.amount for payment in self.payments if payment.status == 'Completed')
+        return float(collected)
 
 class RSVP(db.Model):
     __tablename__ = 'rsvps'
@@ -63,3 +64,12 @@ class Payment(db.Model):
     status = db.Column(db.String(64), nullable=False, default='Pending')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+
+class Feedback(db.Model):
+    __tablename__ = 'feedbacks'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

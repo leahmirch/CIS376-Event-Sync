@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}View Feedbacks - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Feedback for <span class="text-primary">{{ event.name }}</span></h1>
+    {% if feedbacks %}
+    <ul class="list-group">
+        {% for feedback in feedbacks %}
+        <li class="list-group-item">
+            <p><strong>{{ feedback.user.username }}:</strong> {{ feedback.comment }}</p>
+            <p><strong>Rating:</strong> {{ feedback.rating }}/5</p>
+            <p><small>{{ feedback.timestamp.strftime('%Y-%m-%d %H:%M') }}</small></p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No feedbacks available for this event.</p>
+    {% endif %}
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary mt-3">Return to Dashboard</a>
+</div>
+{% endblock %}

@@ -12,19 +12,22 @@
         <li class="list-group-item"><strong>End Date:</strong> {{ event.end_datetime.strftime('%Y-%m-%d') }}</li>
         <li class="list-group-item"><strong>End Time:</strong> {{ event.end_datetime.strftime('%I:%M %p') }}</li>
         <li class="list-group-item"><strong>Location:</strong> {{ event.location }}</li>
-        <li class="list-group-item"><strong>Total Collected:</strong> ${{ total_collected }}</li>
+        <li class="list-group-item"><strong>Total Collected:</strong> ${{ '{:.2f}'.format(event.total_collected()) }}</li>
     </ul>
 
-    <a href="{{ url_for('main.social', event_id=event.id) }}" class="btn btn-primary">Share</a>
-    <a href="{{ url_for('main.calendar', event_id=event.id) }}" class="btn btn-success">Add to Calendar</a>
-
     <form method="POST" id="accept-decline-form">
-        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="accept" class="btn btn-success" onclick="openPayPal('{{ event.payment_amount }}')">Accept</button>
         <button type="submit" name="action" value="decline" class="btn btn-danger">Decline</button>
     </form>
 </div>
 
 <script>
+function openPayPal(amount) {
+    if (amount > 0) {
+        window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mirchleah20@yahoo.com&amount=' + amount + '&currency_code=USD', '_blank');
+    }
+}
+
 document.getElementById('accept-decline-form').addEventListener('submit', function(event) {
     event.preventDefault();
     var action = event.submitter.value;

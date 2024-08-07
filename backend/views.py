@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from backend.models import db, User, Event, RSVP, Vendor, Payment
+from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback
 from datetime import datetime
 from flask import abort
 
@@ -71,10 +71,11 @@ def event(event_id):
     event = Event.query.get_or_404(event_id)
     rsvps = RSVP.query.filter_by(event_id=event.id).all()
     total_collected = event.total_collected()
+    feedbacks = Feedback.query.filter_by(event_id=event.id).all()
     # Fetch all users excluding current invitees
     invited_user_ids = [invitee.user_id for invitee in rsvps]
     users = User.query.filter(User.id.notin_(invited_user_ids)).all()
-    return render_template('event.html', event=event, rsvps=rsvps, users=users, total_collected=total_collected)
+    return render_template('event.html', event=event, rsvps=rsvps, users=users, total_collected=total_collected, feedbacks=feedbacks)
 
 @main.route('/event/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -206,6 +207,26 @@ def calendar(event_id):
     event = Event.query.get_or_404(event_id)
     return render_template('calendar.html', event=event)
 
+@main.route('/feedback/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+def feedback(event_id):
+    if request.method == 'POST':
+        comment = request.form['comment']
+        rating = request.form['rating']
+        feedback = Feedback(user_id=current_user.id, event_id=event_id, comment=comment, rating=rating)
+        db.session.add(feedback)
+        db.session.commit()
+        flash('Feedback submitted successfully.', 'success')
+        return redirect(url_for('main.dashboard'))
+    event = Event.query.get_or_404(event_id)
+    return render_template('feedback.html', event=event)
+
+@main.route('/event/<int:event_id>/view_feedbacks')
+@login_required
+def view_feedbacks(event_id):
+    event = Event.query.get_or_404(event_id)
+    feedbacks = Feedback.query.filter_by(event_id=event.id).all()
+    return render_template('view_feedbacks.html', event=event, feedbacks=feedbacks)
 
 def setup_routes(app):
     app.register_blueprint(main)

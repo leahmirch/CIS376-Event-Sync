@@ -54,6 +54,18 @@ CREATE TABLE payments (
     FOREIGN KEY (event_id) REFERENCES events(id)
 );
 
+-- Create the 'feedbacks' table
+CREATE TABLE feedbacks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
+    comment TEXT NOT NULL,
+    rating INTEGER NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
+
 -- Create the 'event_vendor' association table
 CREATE TABLE event_vendor (
     event_id INTEGER NOT NULL,

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Provide Feedback - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Provide Feedback for <span class="text-primary">{{ event.name }}</span></h1>
+    <form method="POST" action="{{ url_for('main.feedback', event_id=event.id) }}">
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="rating">Rating</label>
+            <select class="form-control" id="rating" name="rating" required>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Good</option>
+                <option value="3">3 - Average</option>
+                <option value="2">2 - Poor</option>
+                <option value="1">1 - Terrible</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        <a href="{{ url_for('main.event', event_id=event.id) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
