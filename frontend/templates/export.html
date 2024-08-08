@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Export Event Data - EventSync{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Export Data for Event: <span class="text-primary">{{ event.name }}</span></h1>
+    <p class="lead">Choose the format you want to export the data in:</p>
+    <a href="{{ url_for('main.export_event_csv', event_id=event.id) }}" class="btn btn-info mb-2">Export as CSV</a>
+    <a href="{{ url_for('main.export_event_json', event_id=event.id) }}" class="btn btn-info mb-2">Export as JSON</a>
+    </div>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary mt-3">Return to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,10 +1,13 @@
 # views.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_login import login_required, current_user
 from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback, Community, Notification
 from datetime import datetime
 from flask import abort
 from backend.utils import create_notification
+import csv
+import json
+import io
 
 main = Blueprint('main', __name__)
 
@@ -249,6 +252,69 @@ def clear_notifications():
     db.session.commit()
     flash('All notifications cleared.', 'success')
     return redirect(url_for('main.dashboard'))
+
+@main.route('/event/<int:event_id>/export')
+@login_required
+def export_page(event_id):
+    event = Event.query.get_or_404(event_id)
+    return render_template('export.html', event=event)
+
+@main.route('/event/<int:event_id>/export/csv')
+@login_required
+def export_event_csv(event_id):
+    event = Event.query.get_or_404(event_id)
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Writing the event details
+    writer.writerow(['Event Name', 'Description', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Location', 'Total Collected'])
+    writer.writerow([event.name, event.description, event.start_datetime.strftime('%Y-%m-%d'), event.start_datetime.strftime('%I:%M %p'), event.end_datetime.strftime('%Y-%m-%d'), event.end_datetime.strftime('%I:%M %p'), event.location, event.total_collected()])
+
+    # Writing the RSVPs
+    writer.writerow([])
+    writer.writerow(['RSVPs'])
+    writer.writerow(['User', 'Status'])
+    for rsvp in event.rsvps:
+        writer.writerow([rsvp.user.username, rsvp.status])
+
+    # Writing the Vendors
+    writer.writerow([])
+    writer.writerow(['Vendors'])
+    writer.writerow(['Name', 'Contact Info', 'Contract Details'])
+    for vendor in event.vendors:
+        writer.writerow([vendor.name, vendor.contact_info, vendor.contract_details])
+
+    # Writing the Feedback
+    writer.writerow([])
+    writer.writerow(['Feedback'])
+    writer.writerow(['User', 'Comment', 'Rating'])
+    for feedback in event.feedbacks:
+        writer.writerow([feedback.user.username, feedback.comment, feedback.rating])
+
+    output.seek(0)
+    return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv', as_attachment=True, download_name=f'{event.name}_event_data.csv')
+
+@main.route('/event/<int:event_id>/export/json')
+@login_required
+def export_event_json(event_id):
+    event = Event.query.get_or_404(event_id)
+    event_data = {
+        'name': event.name,
+        'description': event.description,
+        'start_date': event.start_datetime.strftime('%Y-%m-%d'),
+        'start_time': event.start_datetime.strftime('%I:%M %p'),
+        'end_date': event.end_datetime.strftime('%Y-%m-%d'),
+        'end_time': event.end_datetime.strftime('%I:%M %p'),
+        'location': event.location,
+        'total_collected': event.total_collected(),
+        'rsvps': [{'user': rsvp.user.username, 'status': rsvp.status} for rsvp in event.rsvps],
+        'vendors': [{'name': vendor.name, 'contact_info': vendor.contact_info, 'contract_details': vendor.contract_details} for vendor in event.vendors],
+        'feedback': [{'user': feedback.user.username, 'comment': feedback.comment, 'rating': feedback.rating} for feedback in event.feedbacks]
+    }
+
+    response = jsonify(event_data)
+    response.headers.add('Content-Disposition', 'attachment; filename=' + f'{event.name}_event_data.json')
+    return response
 
 def setup_routes(app):
     app.register_blueprint(main)

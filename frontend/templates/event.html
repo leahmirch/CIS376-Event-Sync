@@ -15,10 +15,16 @@
         <li class="list-group-item"><strong>Total Collected:</strong> ${{ '{:.2f}'.format(event.total_collected()) }}</li>
     </ul>
 
+    <form method="GET" action="{{ url_for('main.feedback', event_id=event.id) }}" class="mt-3">
+        <button type="submit" class="btn btn-primary">Provide Feedback</button>
+    </form>
+    <p> </p>
+
     <form method="POST" id="accept-decline-form">
         <button type="submit" name="action" value="accept" class="btn btn-success" onclick="openPayPal('{{ event.payment_amount }}')">Accept</button>
         <button type="submit" name="action" value="decline" class="btn btn-danger">Decline</button>
     </form>
+    <a href="{{ url_for('main.export_page', event_id=event.id) }}" class="btn btn-info mt-3">Export</a>
 </div>
 
 <script>
