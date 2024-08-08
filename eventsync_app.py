@@ -11,6 +11,7 @@ from backend.payment_views import setup_payment_routes
 from backend.community_views import setup_community_routes
 from backend.notification_views import notification_bp  # Import the notification blueprint
 from flask_migrate import Migrate
+from flask import Flask, send_from_directory
 
 # Initialize the Flask application
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
@@ -50,6 +51,10 @@ def init_db():
         db.create_all()  # Create all tables based on models
         print("Initialized the database.")
 
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(app.static_folder, filename)
+
 # Condition to run the application directly
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
