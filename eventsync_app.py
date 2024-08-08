@@ -9,6 +9,7 @@ from backend.api.user_api import setup_user_api
 from backend.vendor_views import setup_vendor_routes
 from backend.payment_views import setup_payment_routes
 from backend.community_views import setup_community_routes
+from backend.notification_views import notification_bp  # Import the notification blueprint
 from flask_migrate import Migrate
 
 # Initialize the Flask application
@@ -34,6 +35,7 @@ setup_user_api(app)
 setup_vendor_routes(app)  # Register vendor blueprint
 setup_payment_routes(app)  # Register payment blueprint
 setup_community_routes(app)
+app.register_blueprint(notification_bp)  # Register notification blueprint
 
 # Sample route for the homepage
 @app.route('/')

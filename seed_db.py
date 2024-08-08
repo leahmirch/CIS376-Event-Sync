@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from backend.models import db, User, Event, Vendor, RSVP, Community, CommunityMessage
+from backend.models import db, User, Event, Vendor, RSVP, Community, CommunityMessage, Notification
 from datetime import datetime
 
 def add_user_to_db(username, email, password):
@@ -21,6 +21,11 @@ def add_event_to_db(name, description, start_datetime, end_datetime, location, o
     db.session.commit()
     return event.id
 
+def add_notification_to_db(user_id, message):
+    notification = Notification(user_id=user_id, message=message)
+    db.session.add(notification)
+    db.session.commit()
+
 def add_vendor_to_db(name, contact_info, contract_details):
     vendor = Vendor(name=name, contact_info=contact_info, contract_details=contract_details)
     db.session.add(vendor)
@@ -33,6 +38,7 @@ def add_rsvp_to_db(user_id, event_id, status):
 
 def add_community_to_db(name, creator_id):
     community = Community(name=name, creator_id=creator_id)
+    community.members.append(User.query.get(creator_id)) 
     db.session.add(community)
     db.session.commit()
     return community.id

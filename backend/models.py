@@ -1,3 +1,4 @@
+# backend/models.py
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
@@ -28,6 +29,7 @@ class User(UserMixin, db.Model):
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
     created_communities = db.relationship('Community', backref='creator', lazy=True)
     communities = db.relationship('Community', secondary=user_community, backref=db.backref('members', lazy='dynamic'))
+    notifications = db.relationship('Notification', backref='user', lazy=True)
 
     def is_active(self):
         return True
@@ -98,3 +100,11 @@ class CommunityMessage(db.Model):
     message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', backref='community_messages')
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    message = db.Column(db.String(255), nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

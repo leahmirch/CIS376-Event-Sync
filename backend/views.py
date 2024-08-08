@@ -1,10 +1,11 @@
+# views.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback, Community  # Ensure Community is imported
+from backend.models import db, User, Event, RSVP, Vendor, Payment, Feedback, Community, Notification
 from datetime import datetime
 from flask import abort
+from backend.utils import create_notification
 
-# Create a Blueprint for the main part of the application
 main = Blueprint('main', __name__)
 
 @main.route('/')
@@ -18,9 +19,9 @@ def dashboard():
     rsvps = RSVP.query.filter_by(user_id=current_user.id).all()
     user_communities = current_user.communities
     all_communities = Community.query.all()
-    # Communities that the user has not joined or created
     joinable_communities = [c for c in all_communities if c not in user_communities and c.creator_id != current_user.id]
-    return render_template('dashboard.html', events=events, rsvps=rsvps, user_communities=user_communities, joinable_communities=joinable_communities)
+    notifications = Notification.query.filter_by(user_id=current_user.id).order_by(Notification.timestamp.desc()).limit(10).all()
+    return render_template('dashboard.html', events=events, rsvps=rsvps, user_communities=user_communities, joinable_communities=joinable_communities, notifications=notifications)
 
 @main.route('/event/new', methods=['GET', 'POST'])
 @login_required
@@ -54,12 +55,13 @@ def new_event():
             db.session.add(new_event)
             db.session.commit()
             
-            # Assign vendors to the event
             for vendor_id in vendor_ids:
                 vendor = Vendor.query.get(vendor_id)
                 new_event.vendors.append(vendor)
             db.session.commit()
             
+            create_notification(current_user.id, f"You have created a new event: {event_name}")
+
             flash('Event created successfully!', 'success')
             return redirect(url_for('main.dashboard'))
         except Exception as e:
@@ -76,7 +78,6 @@ def event(event_id):
     rsvps = RSVP.query.filter_by(event_id=event.id).all()
     total_collected = event.total_collected()
     feedbacks = Feedback.query.filter_by(event_id=event.id).all()
-    # Fetch all users excluding current invitees
     invited_user_ids = [invitee.user_id for invitee in rsvps]
     users = User.query.filter(User.id.notin_(invited_user_ids)).all()
     return render_template('event.html', event=event, rsvps=rsvps, users=users, total_collected=total_collected, feedbacks=feedbacks)
@@ -99,14 +100,14 @@ def edit_event(event_id):
         event.payment_amount = request.form['payment_amount'] if event.payment_required else 0
 
         try:
-            # Clear existing vendors and assign new ones
             event.vendors = []
             for vendor_id in vendor_ids:
                 vendor = Vendor.query.get(vendor_id)
                 event.vendors.append(vendor)
             db.session.commit()
 
-            db.session.commit()
+            create_notification(current_user.id, f"You have edited the event: {event.name}")
+
             flash('Event updated successfully!', 'success')
             return redirect(url_for('main.dashboard'))
         except Exception as e:
@@ -124,6 +125,9 @@ def delete_event(event_id):
         abort(403)
     db.session.delete(event)
     db.session.commit()
+
+    create_notification(current_user.id, f"The event {event.name} has been deleted")
+
     flash('Event deleted successfully!', 'success')
     return redirect(url_for('main.dashboard'))
 
@@ -134,10 +138,7 @@ def view_invitees(event_id):
     if event.organizer_id != current_user.id:
         abort(403)
     
-    # Fetch current invitees
     invitees = RSVP.query.filter_by(event_id=event.id).all()
-    
-    # Fetch all users excluding current invitees
     invited_user_ids = [invitee.user_id for invitee in invitees]
     users = User.query.filter(User.id.notin_(invited_user_ids)).all()
     
@@ -150,12 +151,12 @@ def invite_people(event_id):
     if event.organizer_id != current_user.id:
         abort(403)
     
-    # Get selected users from the form
     selected_user_ids = request.form.getlist('invitees')
     
     for user_id in selected_user_ids:
         invite = RSVP(user_id=user_id, event_id=event_id, status='Pending')
         db.session.add(invite)
+        create_notification(user_id, f"You have been invited to an event: {event.name}.")
     
     db.session.commit()
     invited_users = User.query.filter(User.id.in_(selected_user_ids)).all()
@@ -183,10 +184,16 @@ def view_event(event_id):
                 db.session.add(payment)
             rsvp.status = 'Accepted'
             db.session.commit()
+
+            create_notification(event.organizer_id, f"{current_user.username} has accepted the invitation to the event: {event.name}")
+
             return redirect(url_for('user_api.accept_success', event_id=event.id))
         elif action == 'decline':
             rsvp.status = 'Declined'
             db.session.commit()
+
+            create_notification(event.organizer_id, f"{current_user.username} has declined the invitation to the event: {event.name}")
+
             return redirect(url_for('user_api.decline_success', event_id=event.id))
 
     return render_template('view_event.html', event=event, rsvp=rsvp, payment=payment)
@@ -220,6 +227,9 @@ def feedback(event_id):
         feedback = Feedback(user_id=current_user.id, event_id=event_id, comment=comment, rating=rating)
         db.session.add(feedback)
         db.session.commit()
+
+        create_notification(event.organizer_id, f"New feedback for event: {event.name}")
+
         flash('Feedback submitted successfully.', 'success')
         return redirect(url_for('main.dashboard'))
     event = Event.query.get_or_404(event_id)
@@ -231,6 +241,14 @@ def view_feedbacks(event_id):
     event = Event.query.get_or_404(event_id)
     feedbacks = Feedback.query.filter_by(event_id=event.id).all()
     return render_template('view_feedbacks.html', event=event, feedbacks=feedbacks)
+
+@main.route('/clear_notifications', methods=['POST'])
+@login_required
+def clear_notifications():
+    Notification.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    flash('All notifications cleared.', 'success')
+    return redirect(url_for('main.dashboard'))
 
 def setup_routes(app):
     app.register_blueprint(main)

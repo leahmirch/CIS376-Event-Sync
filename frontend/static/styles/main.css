@@ -80,6 +80,10 @@ body {
     background-color: #1f4469; /* Even darker blue on hover for better interaction */
 }
 
+.navbar-nav .dropdown-menu {
+    width: auto;
+}
+
 /* Form styling */
 input[type="text"],
 input[type="password"],

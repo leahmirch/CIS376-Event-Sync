@@ -1,6 +1,8 @@
+# vendor_views.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from backend.models import db, Vendor, Event
+from backend.utils import create_notification
 
 vendor_bp = Blueprint('vendor', __name__)
 
@@ -21,6 +23,8 @@ def new_vendor():
         new_vendor = Vendor(name=name, contact_info=contact_info, contract_details=contract_details)
         db.session.add(new_vendor)
         db.session.commit()
+
+        create_notification(current_user.id, f"You have added a new vendor: {name}")
         
         flash('Vendor added successfully!', 'success')
         return redirect(url_for('vendor.vendor_list'))
@@ -37,6 +41,9 @@ def edit_vendor(vendor_id):
         vendor.contract_details = request.form['contract_details']
         
         db.session.commit()
+
+        create_notification(current_user.id, f"You have edited the vendor: {vendor.name}")
+
         flash('Vendor updated successfully!', 'success')
         return redirect(url_for('vendor.vendor_list'))
     
@@ -48,6 +55,9 @@ def delete_vendor(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     db.session.delete(vendor)
     db.session.commit()
+
+    create_notification(current_user.id, f"You have deleted the vendor: {vendor.name}")
+
     flash('Vendor deleted successfully!', 'success')
     return redirect(url_for('vendor.vendor_list'))
 

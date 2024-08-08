@@ -1,6 +1,8 @@
+# payment_views.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from backend.models import db, Payment, Event, RSVP
+from backend.utils import create_notification
 
 payment_bp = Blueprint('payment', __name__)
 
@@ -18,6 +20,10 @@ def execute_payment(event_id):
     if payment:
         payment.status = 'Completed'
         db.session.commit()
+
+        # Notify event organizer
+        create_notification(event.organizer_id, f"Payment received for event: {event.name}")
+
         flash('Payment successful!', 'success')
     else:
         flash('Payment not found.', 'danger')

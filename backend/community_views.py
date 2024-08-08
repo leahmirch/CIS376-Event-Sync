@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from backend.models import db, Community, CommunityMessage, User
+from backend.utils import create_notification
 
 community_bp = Blueprint('community', __name__)
 
@@ -21,6 +22,8 @@ def create():
         community.members.append(current_user)
         db.session.add(community)
         db.session.commit()
+
+        create_notification(current_user.id, f"You have created a new community: {name}")
 
         flash('Community created successfully!', 'success')
         return redirect(url_for('community.index'))
@@ -43,6 +46,7 @@ def join(community_id):
     if current_user not in community.members:
         community.members.append(current_user)
         db.session.commit()
+        create_notification(current_user.id, f"You have joined the community: {community.name}")
         flash('You have joined the community.', 'success')
     else:
         flash('You are already a member of this community.', 'info')
@@ -59,6 +63,12 @@ def post_message(community_id):
     message = CommunityMessage(community_id=community_id, user_id=current_user.id, message=message_text)
     db.session.add(message)
     db.session.commit()
+
+    # Notify community members
+    for member in community.members:
+        if member.id != current_user.id:
+            create_notification(member.id, f"New message in community {community.name}")
+
     return redirect(url_for('community.view_community', community_id=community_id))
 
 @community_bp.route('/<int:community_id>/delete', methods=['POST'])
@@ -70,6 +80,9 @@ def delete(community_id):
         return redirect(url_for('community.view_community', community_id=community_id))
     db.session.delete(community)
     db.session.commit()
+
+    create_notification(community.creator_id, f"The community {community.name} has been deleted")
+
     flash('Community deleted successfully!', 'success')
     return redirect(url_for('main.dashboard'))
 
