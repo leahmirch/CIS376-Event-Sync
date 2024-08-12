@@ -51,9 +51,10 @@ Once the application is set up and running, you can access it via your web brows
 
 ## Testing
 
-To run tests, use the following command:
+### Unit Tests
+To run unit tests, use the following command:
 ```bash
-python -m unittest discover
+python -m unittest discover -s tests/unittests
 ```
 
 ## Contact

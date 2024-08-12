@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const eventForm = document.querySelector('#event-form');
     if (eventForm) {
         eventForm.addEventListener('submit', function(event) {
-            // Example validation: ensure the event name is entered
             let eventName = document.querySelector('#event-name').value;
             if (!eventName) {
                 alert('Please enter an event name.');

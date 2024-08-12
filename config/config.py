@@ -11,8 +11,6 @@ class Config:
     # General Flask app configurations
     DEBUG = True  # Turn off in production
 
-    # Additional configurations can be added here
-    # For example, configuration for email server
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None

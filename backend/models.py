@@ -1,17 +1,14 @@
-# backend/models.py
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-# Association table for many-to-many relationship between events and vendors
 event_vendor = db.Table('event_vendor',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
     db.Column('vendor_id', db.Integer, db.ForeignKey('vendors.id'), primary_key=True)
 )
 
-# Association table for many-to-many relationship between users and communities
 user_community = db.Table('user_community',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
     db.Column('community_id', db.Integer, db.ForeignKey('communities.id'), primary_key=True)
@@ -53,6 +50,17 @@ class Event(db.Model):
     def total_collected(self):
         collected = sum(payment.amount for payment in self.payments if payment.status == 'Completed')
         return float(collected)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'start_datetime': self.start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            'end_datetime': self.end_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            'location': self.location,
+            'organizer_id': self.organizer_id
+        }
 
 class RSVP(db.Model):
     __tablename__ = 'rsvps'

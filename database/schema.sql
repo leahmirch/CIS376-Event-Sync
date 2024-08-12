@@ -103,6 +103,7 @@ CREATE TABLE user_community (
     FOREIGN KEY (community_id) REFERENCES communities(id)
 );
 
+-- Create the 'notifications' table
 CREATE TABLE notifications (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,

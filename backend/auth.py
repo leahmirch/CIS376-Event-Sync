@@ -28,21 +28,21 @@ def login():
     if request.method == 'POST':
         username = request.form['username'].strip()
         password = request.form['password']
-        logging.debug(f"Login attempt with username: {username}")  # Log username attempt
+        logging.debug(f"Login attempt with username: {username}")  
 
         user = User.query.filter_by(username=username).first()
-        logging.debug(f"User found in DB: {user is not None}")  # Confirm user lookup
+        logging.debug(f"User found in DB: {user is not None}")  
         if not user:
             flash('Username does not exist. Please register.', 'error')
             return render_template('login.html')
 
         if not check_password_hash(user.password_hash, password):
-            logging.debug("Password hash check failed")  # Log failed password check
+            logging.debug("Password hash check failed")  
             flash('Password is incorrect. Please try again.', 'error')
             return render_template('login.html')
 
         login_user(user, remember=True)
-        logging.debug("User logged in successfully")  # Confirm successful login
+        logging.debug("User logged in successfully")  
         return redirect(url_for('main.dashboard'))
 
     return render_template('login.html')
@@ -77,7 +77,7 @@ def logout():
 if __name__ == "__main__":
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'key20'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventsync.db'  # Correct path
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventsync.db'  
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     app.register_blueprint(auth)

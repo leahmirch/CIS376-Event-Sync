@@ -1,4 +1,3 @@
-# backend/notification_views.py
 from flask import Blueprint, redirect, url_for
 from flask_login import login_required, current_user
 from backend.models import db, Notification

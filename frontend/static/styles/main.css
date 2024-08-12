@@ -1,12 +1,9 @@
-/* General body styles */
 body {
     background-color: #f8f9fa;
     color: #333;
     font-family: 'Arial', sans-serif;
 }
 
-
-/* Ensure form buttons have the same style as anchor buttons */
 .btn-dashboard {
     display: inline-block;
     text-align: center;
@@ -53,7 +50,7 @@ body {
 
 /* Navbar customization */
 .navbar {
-    background-color: #DDEBF7; /* Assuming the logo's primary color */
+    background-color: #DDEBF7;
 }
 
 .navbar-dark .navbar-brand,
@@ -62,22 +59,22 @@ body {
 }
 
 .navbar-brand img {
-    height: 40px;  /* Adjust the height to fit your navbar's size */
-    width: auto;   /* Maintains the aspect ratio of the image */
+    height: 40px;
+    width: auto;  
 }
 
 .navbar-dark .navbar-nav .nav-link {
-    margin-right: 20px; /* Adds space to the right of each nav item */
+    margin-right: 20px; 
     margin-top: 5px;
     margin-bottom: 5px;
-    padding: 10px 15px; /* Adds padding inside the border */
-    border-radius: 5px; /* Rounds the corners of the border */
-    background-color: #5680ad; /* Darker background for each nav item, same as border */
-    transition: background-color 0.3s ease-in-out; /* Smooth transition for hover effect */
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    background-color: #5680ad; 
+    transition: background-color 0.3s ease-in-out; 
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-    background-color: #1f4469; /* Even darker blue on hover for better interaction */
+    background-color: #1f4469; 
 }
 
 .navbar-nav .dropdown-menu {

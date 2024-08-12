@@ -1,4 +1,3 @@
-# backend/utils.py
 from backend.models import db, Notification
 
 def create_notification(user_id, message):

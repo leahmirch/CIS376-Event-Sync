@@ -1,4 +1,3 @@
-# eventsync_app.py
 from flask import Flask, render_template
 from config.config import Config
 from backend.models import db
@@ -9,7 +8,7 @@ from backend.api.user_api import setup_user_api
 from backend.vendor_views import setup_vendor_routes
 from backend.payment_views import setup_payment_routes
 from backend.community_views import setup_community_routes
-from backend.notification_views import notification_bp  # Import the notification blueprint
+from backend.notification_views import notification_bp 
 from flask_migrate import Migrate
 from flask import Flask, send_from_directory
 
@@ -29,16 +28,15 @@ migrate = Migrate(app, db)
 setup_login_manager(app)
 
 # Register blueprints
-app.register_blueprint(auth)  # Register the auth blueprint
+app.register_blueprint(auth) 
 setup_routes(app)
 setup_event_api(app)
 setup_user_api(app)
-setup_vendor_routes(app)  # Register vendor blueprint
-setup_payment_routes(app)  # Register payment blueprint
+setup_vendor_routes(app)  
+setup_payment_routes(app) 
 setup_community_routes(app)
-app.register_blueprint(notification_bp)  # Register notification blueprint
+app.register_blueprint(notification_bp) 
 
-# Sample route for the homepage
 @app.route('/')
 def home():
     return render_template('index.html')
