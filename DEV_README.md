@@ -82,13 +82,6 @@ If you encounter `ERR_CONNECTION_REFUSED`, ensure the following:
 
 Once the application is running, you can access it via your web browser at `http://127.0.0.1:5000/`. Use the navigation bar to access different sections of the application such as the Dashboard, Login, and Event Management pages.
 
-## Testing
-
-To run tests, use the following command:
-```bash
-python -m unittest discover
-```
-
 ## Contact
 
 Leah Mirch - [lmirch@umich.edu](mailto:lmirch@umich.edu)

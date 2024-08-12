@@ -57,6 +57,45 @@ To run unit tests, use the following command:
 python -m unittest discover -s tests/unittests
 ```
 
+### Integration Tests
+To run integration tests, use the following command:
+```bash
+python -m unittest discover -s tests/integrationtests
+```
+
+### Acceptance Tests
+To run acceptance tests, ensure flask is running on local host port 5000, and then run the following command:
+```bash
+flask run --host=localhost --port=5000
+pytest tests/acceptancetests
+```
+
+### Performance Tests
+To run performance tests, ensure flask is running on local host port 5000, and then run the following command:
+```bash
+flask run --host=localhost --port=5000
+locust -f tests/performancetests/test_performance.py
+```
+Once you run the locust command, go to the following local host site to configure and start the load test.
+```bash
+http://localhost:8089
+```
+
+### Security Tests
+To run security tests, ensure flask is running on local host port 5000, and then run the following command:
+```bash
+flask run --host=localhost --port=5000
+pytest tests/securitytests/test_security.py
+```
+
+### Regression Tests
+To run regression tests, ensure flask is running on local host port 5000, and then run the following command:
+```bash
+flask run --host=localhost --port=5000
+pytest tests/regressiontests/test_regression.py
+```
+
+
 ## Contact
 
 For any questions or support, please contact:

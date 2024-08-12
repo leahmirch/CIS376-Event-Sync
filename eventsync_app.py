@@ -12,47 +12,51 @@ from backend.notification_views import notification_bp
 from flask_migrate import Migrate
 from flask import Flask, send_from_directory
 
-# Initialize the Flask application
-app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
+def create_app(config_class=Config):
+    # Initialize the Flask application
+    app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
 
-# Load configuration from config.py
-app.config.from_object(Config)
+    # Load configuration from config.py
+    app.config.from_object(config_class)
 
-# Initialize database
-db.init_app(app)
+    # Initialize database
+    db.init_app(app)
 
-# Set up Flask-Migrate
-migrate = Migrate(app, db)
+    # Set up Flask-Migrate
+    migrate = Migrate(app, db)
 
-# Set up login manager
-setup_login_manager(app)
+    # Set up login manager
+    setup_login_manager(app)
 
-# Register blueprints
-app.register_blueprint(auth) 
-setup_routes(app)
-setup_event_api(app)
-setup_user_api(app)
-setup_vendor_routes(app)  
-setup_payment_routes(app) 
-setup_community_routes(app)
-app.register_blueprint(notification_bp) 
+    # Register blueprints
+    app.register_blueprint(auth) 
+    setup_routes(app)
+    setup_event_api(app)
+    setup_user_api(app)
+    setup_vendor_routes(app)  
+    setup_payment_routes(app) 
+    setup_community_routes(app)
+    app.register_blueprint(notification_bp) 
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+    @app.route('/')
+    def home():
+        return render_template('index.html')
 
-@app.cli.command('init-db')
-def init_db():
-    """Initialize the database."""
-    with app.app_context():
-        db.drop_all()  # Drop all existing tables
-        db.create_all()  # Create all tables based on models
-        print("Initialized the database.")
+    @app.cli.command('init-db')
+    def init_db():
+        """Initialize the database."""
+        with app.app_context():
+            db.drop_all()  # Drop all existing tables
+            db.create_all()  # Create all tables based on models
+            print("Initialized the database.")
 
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    return send_from_directory(app.static_folder, filename)
+    @app.route('/static/<path:filename>')
+    def static_files(filename):
+        return send_from_directory(app.static_folder, filename)
+
+    return app
 
 # Condition to run the application directly
 if __name__ == '__main__':
+    app = create_app()
     app.run()
