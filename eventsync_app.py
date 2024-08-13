@@ -10,7 +10,7 @@ from backend.payment_views import setup_payment_routes
 from backend.community_views import setup_community_routes
 from backend.notification_views import notification_bp 
 from flask_migrate import Migrate
-from flask import Flask, send_from_directory
+from flask import send_from_directory
 
 def create_app(config_class=Config):
     # Initialize the Flask application
@@ -56,7 +56,9 @@ def create_app(config_class=Config):
 
     return app
 
+# Create the app instance here
+app = create_app()
+
 # Condition to run the application directly
 if __name__ == '__main__':
-    app = create_app()
     app.run()
