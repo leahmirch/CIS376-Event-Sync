@@ -64,6 +64,10 @@ python -m unittest discover -s tests/integrationtests
 ```
 
 ### Acceptance Tests
+Before running acceptance tests, ensure to re-seed the database by running: 
+```bash
+python seed_db.py
+```
 To run acceptance tests, ensure flask is running on local host port 5000, and then run the following command:
 ```bash
 flask run --host=localhost --port=5000
